@@ -16,9 +16,9 @@ document.getElementById('run-sandbox').addEventListener('click', () => {
   let iframeWindow = iframe.contentWindow;
 
   try {
-    // Use unsafe-eval (eval) to run the code inside the iframe
-    // This line will work only if unsafe-eval is enabled in the manifest.json
-    let result = iframeWindow.eval(code);  // Using eval to execute code dynamically
+    // Use the Function constructor instead of eval (if needed)
+    let func = new Function(code);  // Create a function from the input code
+    let result = func();  // Execute the function
     outputDiv.innerHTML = `<strong>Result:</strong> ${result}`;  // Display the result
   } catch (e) {
     // If an error occurs, display it in the output area
@@ -65,3 +65,4 @@ function applyFix(fix) {
 
   // Add more complex fixes as needed, such as fixing broken functions or syntax errors
 }
+
