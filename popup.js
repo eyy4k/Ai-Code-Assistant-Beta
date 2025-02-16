@@ -14,6 +14,11 @@ document.getElementById('run-sandbox').addEventListener('click', () => {
   let iframeWindow = iframe.contentWindow;
   let iframeDocument = iframe.contentDocument;
 
+  // Redirect console.log to the parent window's outputDiv
+  iframeWindow.console.log = function(message) {
+    outputDiv.innerHTML += `<br><strong>Console Output:</strong> ${message}`;
+  };
+
   // Create a script element to insert the user code into the iframe's document
   let scriptTag = iframeDocument.createElement('script');
   scriptTag.textContent = code;  // Set the code to be executed
@@ -30,9 +35,8 @@ document.getElementById('run-sandbox').addEventListener('click', () => {
   iframeWindow.onload = function () {
     try {
       // Execute the code and capture the result
-      // Using iframe's window object to retrieve any console.log output
       let result = iframeWindow.document.body.innerText || 'Code executed without returning any output.';
-      outputDiv.innerHTML = `<strong>Result:</strong> ${result}`;
+      outputDiv.innerHTML += `<br><strong>Execution Result:</strong> ${result}`;
     } catch (e) {
       // Handle any exceptions during result retrieval
       outputDiv.innerHTML = `❌ Error: ${e.message}`;
