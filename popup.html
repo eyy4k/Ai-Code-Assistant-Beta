@@ -1,13 +1,38 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <title>AI Code Advisor</title>
-  <style>
-    body { font-family: Arial, sans-serif; padding: 10px; }
-  </style>
-</head>
-<body>
-  <h3>AI Code Advisor</h3>
-  <p>Open DevTools and go to the "AI Code Advisor" tab to analyze code.</p>
-</body>
+<!-- popup.html -->
+<html>
+  <head>
+    <title>AI Code Advisor</title>
+    <style>
+      /* Add your styles here */
+      body {
+        width: 400px;
+        height: 300px;
+        font-family: Arial, sans-serif;
+      }
+      h1 {
+        font-size: 18px;
+      }
+      #output {
+        margin-top: 20px;
+      }
+      .apply-btn {
+        margin-top: 10px;
+        padding: 5px 10px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>AI Code Advisor</h1>
+    <p>Here you can view AI suggestions for improving your code!</p>
+    <div id="output"></div>
+    <textarea id="sandbox-code" rows="10" cols="50" placeholder="Write your code here"></textarea>
+    <br>
+    <button id="run-sandbox">Run Code</button>
+    <div id="sandbox-output"></div>
+    <script src="popup.js"></script>
+  </body>
 </html>
