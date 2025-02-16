@@ -1,4 +1,4 @@
-const OPENAI_API_KEY = "your-openai-api-key"; // Replace with your actual API key
+const OPENAI_API_KEY = "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"; // Replace with your actual API key
 
 document.getElementById("send-btn").addEventListener("click", async () => {
   let userInput = document.getElementById("chat-box").value;
