@@ -12,8 +12,10 @@
     "default_popup": "popup.html"
   },
   "devtools_page": "devtools.html",
-  "content_scripts": [
-    {
+ "host_permissions": [
+    "http://*/*",
+    "https://*/*"
+  ]
       "matches": ["<all_urls>"],
       "js": ["console-watcher.js"]
     }
