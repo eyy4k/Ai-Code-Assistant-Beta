@@ -22,20 +22,27 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 function applyFix(fix) {
   console.log("Applying fix:", fix);
 
-  // Simple example: If AI suggests adding a missing variable
+  // Check if the fix suggests adding a missing variable
   if (fix.includes("undefined variable")) {
     let missingVariable = fix.match(/(?:undefined variable:\s*)(\w+)/);
     if (missingVariable && missingVariable[1]) {
       let varName = missingVariable[1];
-      let scriptTag = document.createElement('script');
-      scriptTag.textContent = `let ${varName} = 'default value';`;  // Example default value
-      document.body.appendChild(scriptTag);
-      alert(`Applied fix: Added missing variable '${varName}' with default value.`);
+
+      // Check if the variable already exists before adding it
+      if (typeof window[varName] === 'undefined') {
+        let scriptTag = document.createElement('script');
+        scriptTag.textContent = `let ${varName} = 'default value';`;  // Example default value
+        document.body.appendChild(scriptTag);
+        alert(`Applied fix: Added missing variable '${varName}' with default value.`);
+      } else {
+        alert(`Variable '${varName}' already exists. No changes applied.`);
+      }
     }
   }
 
-  // Add more complex fixes as needed, such as fixing broken functions or syntax errors
+  // More complex fixes (broken functions, etc.) can be added here.
 }
+
 
 // Add an event listener for the "Run Code" button in the sandbox
 document.getElementById('run-sandbox').addEventListener('click', () => {
