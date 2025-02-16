@@ -71,4 +71,14 @@ document.getElementById('run-sandbox').addEventListener('click', () => {
   document.body.removeChild(iframe);
 });
 
+chrome.devtools.panels.create(
+  "AI Code Advisor",            // Tab title in DevTools
+  "icon.png",                  // Optional: Icon for the tab
+  "panel.html",                // HTML file to show when the tab is selected
+  function(panel) {
+    // Optional: Callback after panel is created
+  }
+);
+
+
 
