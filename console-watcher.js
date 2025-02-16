@@ -9,7 +9,7 @@ const OPENAI_API_KEY = "your-openai-api-key"; // Replace with your actual API ke
     let errorMessage = args.join(" ");
     console.log("🔍 Detected Console Error:", errorMessage);
 
-    // Send the error to GPT-4 for analysis
+    // Send the error to GPT-4 for analysis with more context
     fetchGPT4Fix(errorMessage).then(suggestion => {
       console.log("🤖 AI Suggestion:", suggestion);
       sendToDevTools(errorMessage, suggestion);
@@ -28,7 +28,7 @@ const OPENAI_API_KEY = "your-openai-api-key"; // Replace with your actual API ke
         body: JSON.stringify({
           model: "gpt-4",
           messages: [
-            { role: "system", content: "You are a coding expert. Provide fixes for JavaScript errors." },
+            { role: "system", content: "You are a coding expert. Provide fixes for JavaScript errors with context." },
             { role: "user", content: `How do I fix this error? ${errorMessage}` }
           ],
           temperature: 0.7
@@ -52,3 +52,4 @@ const OPENAI_API_KEY = "your-openai-api-key"; // Replace with your actual API ke
     });
   }
 })();
+
