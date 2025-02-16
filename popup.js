@@ -4,65 +4,38 @@
 document.getElementById('run-sandbox').addEventListener('click', () => {
   let code = document.getElementById('sandbox-code').value;
   let outputDiv = document.getElementById('sandbox-output');
-  
+
   // Show a message indicating that the code is being run
   outputDiv.innerHTML = 'Running code...';
 
   // Create an iframe to run the code in a sandboxed environment
   let iframe = document.createElement('iframe');
   iframe.style.display = 'none';  // Hide the iframe
+  iframe.sandbox = "allow-scripts";  // Allow only scripts to run in the iframe
   document.body.appendChild(iframe);
-  
+
   let iframeWindow = iframe.contentWindow;
+  let iframeDocument = iframe.contentDocument;
 
-  try {
-    // Use the Function constructor instead of eval (if needed)
-    let func = new Function(code);  // Create a function from the input code
-    let result = func();  // Execute the function
-    outputDiv.innerHTML = `<strong>Result:</strong> ${result}`;  // Display the result
-  } catch (e) {
-    // If an error occurs, display it in the output area
-    outputDiv.innerHTML = `❌ Error: ${e.message}`;
-  }
-});
+  // Create a script tag to insert the JavaScript code into the iframe
+  let scriptTag = iframeDocument.createElement('script');
+  scriptTag.textContent = code;  // Use the input code from the sandbox
 
-// Handle applying AI code fixes to the console error
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.type === "console_error_fix") {
-    let outputDiv = document.getElementById("output");
-    outputDiv.innerHTML += `<br><br><strong>🛑 Console Error:</strong> ${message.error}`;
-    outputDiv.innerHTML += `<br><strong>✅ AI Fix:</strong> ${message.suggestion}`;
+  // Append the script to the iframe's document body
+  iframeDocument.body.appendChild(scriptTag);
 
-    // Add Apply Fix button
-    let applyButton = document.createElement("button");
-    applyButton.textContent = "Apply Fix";
-    applyButton.classList.add("apply-btn");
+  // Add event listener to capture any errors
+  iframeWindow.onerror = function (event) {
+    outputDiv.innerHTML = `❌ Error: ${event.message}`;
+  };
 
-    // Append button and apply fix when clicked
-    applyButton.addEventListener("click", () => {
-      applyFix(message.suggestion);
-    });
-
-    outputDiv.appendChild(applyButton);
-  }
-});
-
-// Function to apply the fix (for example, fixing a missing variable or adjusting code)
-function applyFix(fix) {
-  console.log("Applying fix:", fix);
-
-  // Simple example: If AI suggests adding a missing variable
-  if (fix.includes("undefined variable")) {
-    let missingVariable = fix.match(/(?:undefined variable:\s*)(\w+)/);
-    if (missingVariable && missingVariable[1]) {
-      let varName = missingVariable[1];
-      let scriptTag = document.createElement('script');
-      scriptTag.textContent = `let ${varName} = 'default value';`;  // Example default value
-      document.body.appendChild(scriptTag);
-      alert(`Applied fix: Added missing variable '${varName}' with default value.`);
+  // If successful, display the result in the output div
+  iframeWindow.onload = function () {
+    try {
+      let result = iframeWindow.document.body.innerText || 'Code executed without returning any output.';
+      outputDiv.innerHTML = `<strong>Result:</strong> ${result}`;
+    } catch (e) {
+      outputDiv.innerHTML = `❌ Error: ${e.message}`;
     }
-  }
-
-  // Add more complex fixes as needed, such as fixing broken functions or syntax errors
-}
-
+  };
+});
