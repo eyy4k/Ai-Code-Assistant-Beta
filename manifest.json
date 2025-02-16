@@ -23,8 +23,9 @@
   ],
   "content_security_policy": {
     "extension_pages": {
-      "script-src": "'self' 'unsafe-eval';",
+      "script-src": "'self';",
       "object-src": "'self';"
     }
   }
 }
+
