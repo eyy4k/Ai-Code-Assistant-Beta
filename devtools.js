@@ -1,4 +1,4 @@
-const OPENAI_API_KEY = "your-openai-api-key"; // Replace with your actual API key
+const OPENAI_API_KEY = "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"; // Replace with your actual API key
 
 document.getElementById("scan").addEventListener("click", async () => {
   chrome.scripting.executeScript({
