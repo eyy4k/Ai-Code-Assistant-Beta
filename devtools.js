@@ -1,62 +1,38 @@
-const OPENAI_API_KEY = "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"; // Replace with your actual API key
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.type === "console_error_fix") {
+    let outputDiv = document.getElementById("output");
+    outputDiv.innerHTML += `<br><br><strong>🛑 Console Error:</strong> ${message.error}`;
+    outputDiv.innerHTML += `<br><strong>✅ AI Fix:</strong> ${message.suggestion}`;
 
-document.getElementById("scan").addEventListener("click", async () => {
-  chrome.scripting.executeScript({
-    target: { allFrames: true },
-    func: scanCode
-  }, async (results) => {
-    let issues = results[0].result || "No issues found.";
-    
-    // Call GPT-4 for AI-based suggestions
-    let aiSuggestions = await getAISuggestions(issues);
+    // Add Apply Fix button
+    let applyButton = document.createElement("button");
+    applyButton.textContent = "Apply Fix";
+    applyButton.classList.add("apply-btn");
 
-    // Display the AI-enhanced suggestions
-    document.getElementById("output").textContent = aiSuggestions;
-  });
-});
-
-// Function to scan JavaScript & CSS issues
-function scanCode() {
-  let issues = [];
-
-  // Example: Detect 'var' instead of 'let/const'
-  document.querySelectorAll("script").forEach(script => {
-    if (script.textContent.includes("var ")) {
-      issues.push("⚠️ Found 'var' declarations. Use 'let' or 'const' instead.");
-    }
-  });
-
-  // Example: Detect inline styles
-  document.querySelectorAll("[style]").forEach(el => {
-    issues.push(`⚠️ Inline style detected on <${el.tagName.toLowerCase()}> element.`);
-  });
-
-  return issues.length ? issues.join("\n") : "✅ No major issues detected.";
-}
-
-// Function to send issues to OpenAI API
-async function getAISuggestions(issues) {
-  try {
-    let response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${OPENAI_API_KEY}`
-      },
-      body: JSON.stringify({
-        model: "gpt-4",
-        messages: [
-          { role: "system", content: "You are an expert code reviewer. Provide suggestions to improve the following code issues." },
-          { role: "user", content: `Here are the detected issues:\n${issues}\nHow can they be improved?` }
-        ],
-        temperature: 0.7
-      })
+    // Append button and apply fix when clicked
+    applyButton.addEventListener("click", () => {
+      applyFix(message.suggestion);
     });
 
-    let data = await response.json();
-    return data.choices[0].message.content || "AI analysis failed.";
-  } catch (error) {
-    console.error("Error calling OpenAI:", error);
-    return "❌ Error fetching AI suggestions.";
+    outputDiv.appendChild(applyButton);
   }
+});
+
+// Function to apply the fix (for example, fixing a missing variable or adjusting code)
+function applyFix(fix) {
+  console.log("Applying fix:", fix);
+
+  // Simple example: If AI suggests adding a missing variable
+  if (fix.includes("undefined variable")) {
+    let missingVariable = fix.match(/(?:undefined variable:\s*)(\w+)/);
+    if (missingVariable && missingVariable[1]) {
+      let varName = missingVariable[1];
+      let scriptTag = document.createElement('script');
+      scriptTag.textContent = `let ${varName} = 'default value';`;  // Example default value
+      document.body.appendChild(scriptTag);
+      alert(`Applied fix: Added missing variable '${varName}' with default value.`);
+    }
+  }
+
+  // Add more complex fixes as needed, such as fixing broken functions or syntax errors
 }
