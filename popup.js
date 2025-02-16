@@ -2,7 +2,6 @@
 
 // Function to handle the "Run Code" button click
 document.getElementById('run-sandbox').addEventListener('click', () => {
-  // Get the code input by the user
   let code = document.getElementById('sandbox-code').value;
   let outputDiv = document.getElementById('sandbox-output');
   
@@ -17,8 +16,9 @@ document.getElementById('run-sandbox').addEventListener('click', () => {
   let iframeWindow = iframe.contentWindow;
 
   try {
-    // Run the code in the iframe (sandboxed environment)
-    let result = iframeWindow.eval(code);  // Use eval to execute the code in the iframe
+    // Use unsafe-eval (eval) to run the code inside the iframe
+    // This line will work only if unsafe-eval is enabled in the manifest.json
+    let result = iframeWindow.eval(code);  // Using eval to execute code dynamically
     outputDiv.innerHTML = `<strong>Result:</strong> ${result}`;  // Display the result
   } catch (e) {
     // If an error occurs, display it in the output area
@@ -26,20 +26,19 @@ document.getElementById('run-sandbox').addEventListener('click', () => {
   }
 });
 
-// Listen for AI suggestions from the background script or elsewhere in the extension
+// Handle applying AI code fixes to the console error
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === "console_error_fix") {
-    // Display the error and suggested fix
     let outputDiv = document.getElementById("output");
     outputDiv.innerHTML += `<br><br><strong>🛑 Console Error:</strong> ${message.error}`;
     outputDiv.innerHTML += `<br><strong>✅ AI Fix:</strong> ${message.suggestion}`;
 
-    // Create the "Apply Fix" button
+    // Add Apply Fix button
     let applyButton = document.createElement("button");
     applyButton.textContent = "Apply Fix";
     applyButton.classList.add("apply-btn");
 
-    // Add event listener to apply the fix when clicked
+    // Append button and apply fix when clicked
     applyButton.addEventListener("click", () => {
       applyFix(message.suggestion);
     });
@@ -48,21 +47,21 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 });
 
-// Function to apply a fix suggested by AI
+// Function to apply the fix (for example, fixing a missing variable or adjusting code)
 function applyFix(fix) {
   console.log("Applying fix:", fix);
 
-  // Example: If AI suggests adding a missing variable
+  // Simple example: If AI suggests adding a missing variable
   if (fix.includes("undefined variable")) {
     let missingVariable = fix.match(/(?:undefined variable:\s*)(\w+)/);
     if (missingVariable && missingVariable[1]) {
       let varName = missingVariable[1];
       let scriptTag = document.createElement('script');
-      scriptTag.textContent = `let ${varName} = 'default value';`;  // Add default value
+      scriptTag.textContent = `let ${varName} = 'default value';`;  // Example default value
       document.body.appendChild(scriptTag);
       alert(`Applied fix: Added missing variable '${varName}' with default value.`);
     }
   }
 
-  // Add other fix scenarios here as needed
+  // Add more complex fixes as needed, such as fixing broken functions or syntax errors
 }
