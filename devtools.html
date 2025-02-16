@@ -9,6 +9,9 @@
     #chat-box { width: 100%; height: 100px; padding: 5px; }
     #send-btn { margin-top: 5px; cursor: pointer; }
     .apply-btn { margin-top: 10px; padding: 5px 10px; background-color: #4CAF50; color: white; cursor: pointer; }
+    .sandbox-container { margin-top: 20px; }
+    .sandbox-container textarea { width: 100%; height: 200px; font-family: monospace; border: 1px solid #ccc; padding: 10px; }
+    .run-btn { margin-top: 10px; background-color: #008CBA; color: white; cursor: pointer; padding: 5px 10px; }
   </style>
 </head>
 <body>
@@ -21,6 +24,14 @@
     <textarea id="chat-box" placeholder="Ask a coding question..."></textarea>
     <button id="send-btn">Send</button>
     <div id="chat-response"></div>
+  </div>
+
+  <!-- Live Sandbox Section -->
+  <div class="sandbox-container">
+    <h3>Live Coding Sandbox</h3>
+    <textarea id="sandbox-code" placeholder="Write and test your JavaScript code here..."></textarea>
+    <button id="run-sandbox" class="run-btn">Run Code</button>
+    <div id="sandbox-output"></div>
   </div>
 
   <script src="devtools.js"></script>
