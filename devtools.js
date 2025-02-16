@@ -36,3 +36,29 @@ function applyFix(fix) {
 
   // Add more complex fixes as needed, such as fixing broken functions or syntax errors
 }
+
+// Add an event listener for the "Run Code" button in the sandbox
+document.getElementById('run-sandbox').addEventListener('click', () => {
+  let code = document.getElementById('sandbox-code').value;
+  let outputDiv = document.getElementById('sandbox-output');
+  outputDiv.innerHTML = 'Running code...';
+
+  // If you want to run the code inside an iframe to isolate it:
+  let iframe = document.createElement('iframe');
+  iframe.style.display = 'none';  // Hide the iframe, as it's just for running the code
+  document.body.appendChild(iframe);
+  
+  let iframeWindow = iframe.contentWindow;
+
+  // Try to run the code inside the iframe and display the result
+  try {
+    let result = iframeWindow.eval(code);  // Use eval inside the iframe for sandboxed execution
+    outputDiv.innerHTML = `<strong>Result:</strong> ${result}`;
+  } catch (e) {
+    outputDiv.innerHTML = `❌ Error: ${e.message}`;
+  }
+
+  // Clean up: Remove the iframe after running the code
+  document.body.removeChild(iframe);
+});
+
