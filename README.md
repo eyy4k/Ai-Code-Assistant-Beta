@@ -19,5 +19,4 @@ CSS
 
 JavaScript (vanilla)
 
-🚀 How to Run
-Clone the repo:
+
